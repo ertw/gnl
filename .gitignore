@@ -7,4 +7,4 @@ a.out
 *.a
 *.DS_Store
 test.c
-fillit
+main.c
