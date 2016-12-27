@@ -12,9 +12,7 @@
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# include <string.h>
-# include <unistd.h>
-# include <stdlib.h>
+# include "./libft/libft.h"
 # define BUFF_SIZE 32
 # define EOF 0
 # define ERR -1
