@@ -15,4 +15,9 @@
 # include <string.h>
 # include <unistd.h>
 # include <stdlib.h>
+# define BUFF_SIZE 32
+# define EOF 0
+# define ERR -1
+# define READ 1
+int	get_next_line(const int fd, char **line);
 #endif
