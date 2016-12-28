@@ -16,10 +16,12 @@ int	get_next_line(const int fd, char **line)
 {
 	char	buf[BUFF_SIZE];
 	int	bytes_read;
+	char	*nl;
 
 	while (fd && (bytes_read = read(fd, buf, BUFF_SIZE)))
 	{
-		*line = ft_strnew();
+		if ((nl = ft_strchr(buf, '\n')))
+			*line = ft_strdup(buf);
 	}
 	return (EOF);
 }
