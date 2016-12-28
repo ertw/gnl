@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
 int	get_next_line(const int fd, char **line)
 {
@@ -21,7 +22,9 @@ int	get_next_line(const int fd, char **line)
 	while (fd && (bytes_read = read(fd, buf, BUFF_SIZE)))
 	{
 		if ((nl = ft_strchr(buf, '\n')))
-			*line = ft_strdup(buf);
+			printf("%ld\n", nl - buf);
+			*line = ft_strndup(buf, nl - buf);
+			printf("%s\n", *line);
 	}
 	return (EOF);
 }
