@@ -9,5 +9,5 @@ a.out
 test.c
 main.c
 make.sh
-test.txt
+test*.txt
 test_gnl

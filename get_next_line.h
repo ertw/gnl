@@ -6,7 +6,7 @@
 /*   By: ewilliam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/26 10:20:29 by ewilliam          #+#    #+#             */
-/*   Updated: 2016/12/26 10:20:31 by ewilliam         ###   ########.fr       */
+/*   Updated: 2016/12/28 15:49:34 by ewilliam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,4 +18,11 @@
 # define ERR -1
 # define READ 1
 int	get_next_line(const int fd, char **line);
+
+typedef struct		s_tuple
+{
+	char		*s;
+	int		n;
+	int		p;
+}			t_tuple;
 #endif
