@@ -14,15 +14,13 @@
 # define GET_NEXT_LINE_H
 # include "./libft/libft.h"
 # define BUFF_SIZE 32
-# define EOF 0
-# define ERR -1
-# define READ 1
 int	get_next_line(const int fd, char **line);
 
 typedef struct		s_tuple
 {
-	char		*s;
-	int		n;
-	int		p;
+	char		*str;
+	int		len;
+	int		pos;
+	int		init;
 }			t_tuple;
 #endif
