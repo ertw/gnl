@@ -6,7 +6,7 @@
 /*   By: ewilliam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/26 10:26:14 by ewilliam          #+#    #+#             */
-/*   Updated: 2016/12/31 10:38:06 by ewilliam         ###   ########.fr       */
+/*   Updated: 2017/01/02 14:07:36 by ewilliam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void		ft_vec(char **s, char c)
 	ft_memcpy(tmp, *s, len);
 	tmp[len] = c;
 	tmp[len + 1] = '\0';
-//	free(*s);
+	free(*s);
 	*s = tmp;
 }
 
@@ -50,7 +50,14 @@ int				get_next_line(const int fd, char **line)
 		if (!buffer.init)
 			buffer = ft_read(fd);
 		if (buffer.len == 0)
+		{
+			if (full_line)
+			{
+				*line = full_line;
+				return (1);
+			}
 			return (0);
+		}
 		if (buffer.len == -1)
 			return (-1);
 		while (*(buffer.str) != '\n' && buffer.pos != buffer.len)
@@ -63,46 +70,10 @@ int				get_next_line(const int fd, char **line)
 		{
 			buffer.str++;
 			buffer.pos++;
-			*line = full_line;
+			*line = (full_line && *full_line) ? full_line : "";
 			return (1);
 		}
 		if (buffer.len == buffer.pos)
-		{
-//			free(buffer.str);
 			buffer.init = 0;
-		}
 	}
-
-//	full_line = NULL;
-//	while (1)
-//	{
-//		if (!buffer.str)
-//		{
-//			buffer = ft_read(fd);
-//			if (buffer.len == -1)
-//				return (-1);
-//		}
-//		while (*(buffer.str) != '\n' && buffer.pos != buffer.len)
-//		{
-//			ft_vec(&full_line, *(buffer.str));
-//			buffer.pos++;
-//			buffer.str++;
-//		}
-//		if (*(buffer.str) == '\n')
-//		{
-//			buffer.str++;
-//			buffer.pos++;
-//		}
-//		if (buffer.len == buffer.pos && buffer.len == BUFF_SIZE)
-//		{
-//			buffer = ft_read(fd);
-//		}
-//		else
-//		{
-//			if (full_line)
-//				*line = full_line;
-//			return (!!full_line);
-//		}
-//	}
-//	return (0);
 }
