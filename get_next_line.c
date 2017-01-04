@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
+//#include <stdio.h>
 
 static void		ft_vec(char **s, char c)
 {
@@ -47,6 +47,11 @@ int				get_next_line(const int fd, char **line)
 	full_line = NULL;
 	while (1)
 	{
+		// if we have a newline:
+		//   return 1, *line = strdup(buffer[0..newline_position])
+		// otherwise:
+		//   read more data
+		//   loop
 		if (!buffer.init)
 			buffer = ft_read(fd);
 		if (buffer.len == 0)
@@ -60,7 +65,7 @@ int				get_next_line(const int fd, char **line)
 		}
 		if (buffer.len == -1)
 			return (-1);
-		while (*(buffer.str) != '\n' && buffer.pos != buffer.len)
+		while (buffer.str[i] != '\n' && i < buffer.len)
 		{
 			ft_vec(&full_line, *(buffer.str));
 			buffer.pos++;
@@ -74,6 +79,10 @@ int				get_next_line(const int fd, char **line)
 			return (1);
 		}
 		if (buffer.len == buffer.pos)
+		{
 			buffer.init = 0;
+			if (buffer.str)
+				free(buffer.str);
+		}
 	}
 }
