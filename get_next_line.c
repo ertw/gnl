@@ -42,47 +42,90 @@ static t_tuple	ft_read(const int fd)
 int				get_next_line(const int fd, char **line)
 {
 	char			*full_line;
+	char			*tmp;
 	static t_tuple	buffer;
 
 	full_line = NULL;
 	while (1)
 	{
-		// if we have a newline:
-		//   return 1, *line = strdup(buffer[0..newline_position])
-		// otherwise:
-		//   read more data
-		//   loop
-		if (!buffer.init)
-			buffer = ft_read(fd);
-		if (buffer.len == 0)
-		{
-			if (full_line)
-			{
-				*line = full_line;
-				return (1);
-			}
-			return (0);
-		}
-		if (buffer.len == -1)
-			return (-1);
-		while (buffer.str[i] != '\n' && i < buffer.len)
-		{
-			ft_vec(&full_line, *(buffer.str));
-			buffer.pos++;
-			buffer.str++;
-		}
-		if (*(buffer.str) == '\n')
-		{
-			buffer.str++;
-			buffer.pos++;
-			*line = (full_line && *full_line) ? full_line : "";
+		if ( buffer.str && buffer.str[buffer.pos] == '\n') {
 			return (1);
 		}
-		if (buffer.len == buffer.pos)
-		{
-			buffer.init = 0;
-			if (buffer.str)
-				free(buffer.str);
-		}
+		if (!buffer.str)
+			buffer = ft_read(fd);
+
 	}
 }
+
+
+
+
+//if (!buffer.str)
+//buffer = ft_read(fd);
+//if (!buffer.len)
+//{
+//	if (full_line)
+//	{
+//		*line = full_line;
+//		return (1);
+//	}
+//	return (0);
+//}
+//if (buffer.str[buffer.pos] == '\n')
+//{
+//	buffer.pos++;
+//	ret = ft_strdup(full_line);
+//	free(full_line);
+//	full_line = NULL;
+//	*line = ret;
+//	return (1);
+//}
+//ft_vec(&full_line, buffer.str[buffer.pos++]);
+//if (!buffer.str[buffer.pos])
+//{
+//	free(buffer.str);
+//	buffer.str = NULL;
+//}
+
+
+
+
+
+//		// if we have a newline:
+//		//   return 1, *line = strdup(buffer[0..newline_position])
+//		// otherwise:
+//		//   read more data
+//		//   loop
+//		if (!buffer.init)
+//			buffer = ft_read(fd);
+//		if (buffer.len == 0)
+//		{
+//			if (full_line)
+//			{
+//				*line = full_line;
+//				return (1);
+//			}
+//			return (0);
+//		}
+//		if (buffer.len == -1)
+//			return (-1);
+//		while (buffer.str[i] != '\n' && i < buffer.len)
+//		{
+//			ft_vec(&full_line, *(buffer.str));
+//			buffer.pos++;
+//			buffer.str++;
+//		}
+//		if (*(buffer.str) == '\n')
+//		{
+//			buffer.str++;
+//			buffer.pos++;
+//			*line = (full_line && *full_line) ? full_line : "";
+//			return (1);
+//		}
+//		if (buffer.len == buffer.pos)
+//		{
+//			buffer.init = 0;
+//			if (buffer.str)
+//				free(buffer.str);
+//		}
+//	}
