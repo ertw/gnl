@@ -17,8 +17,10 @@ static void		ft_vec(char **s, char c)
 	char	*tmp;
 	size_t	len;
 
-	len = *s == NULL ? 0 : ft_strlen(*s);
-	tmp = malloc(sizeof(char) * (len + 2));
+	len = *s == NULL
+		? 0
+		: ft_strlen(*s);
+	tmp = malloc(sizeof(c) * (len + 2));
 	ft_memcpy(tmp, *s, len);
 	tmp[len] = c;
 	tmp[len + 1] = '\0';
@@ -32,12 +34,14 @@ static t_tuple	ft_read(const int fd)
 	t_tuple		tuple;
 
 	tuple.len = read(fd, buf, BUFF_SIZE);
-	tuple.str = tuple.len > 0 ? ft_strndup(buf, tuple.len) : NULL;
+	tuple.str = tuple.len > 0
+		? ft_strndup(buf, tuple.len)
+		: NULL;
 	tuple.pos = 0;
 	return (tuple);
 }
 
-static int		fill_buf(const int fd, char **line, char *full_line)
+static int		find_line(const int fd, char **line, char *full_line)
 {
 	static t_tuple buffer;
 
@@ -46,19 +50,19 @@ static int		fill_buf(const int fd, char **line, char *full_line)
 		if (buffer.str && buffer.str[buffer.pos] == '\n')
 		{
 			buffer.pos++;
-			return ((*line = full_line) ? 1 : 1);
+			return (!!(*line = full_line) ? 1 : 1);
 		}
+		if (buffer.str && buffer.str[buffer.pos])
+			ft_vec(&full_line, buffer.str[buffer.pos++]);
 		if (buffer.str == NULL)
 			buffer = ft_read(fd);
 		if (buffer.len == 0)
 		{
-			if (full_line)
-				return (!!(*line = full_line));
-			return (0);
+			return (full_line
+					? !!(*line = full_line)
+					: 0);
 		}
-		if (buffer.str[buffer.pos])
-			ft_vec(&full_line, buffer.str[buffer.pos++]);
-		else
+		if (buffer.str[buffer.pos] == '\0')
 		{
 			free(buffer.str);
 			buffer.str = NULL;
@@ -71,7 +75,7 @@ int				get_next_line(const int fd, char **line)
 	char			*full_line;
 
 	full_line = NULL;
-	if (!line || fd < 0 || read(fd, full_line, 0) == -1)
-		return (-1);
-	return (fill_buf(fd, line, full_line));
+	return ((!line || fd < 0 || read(fd, full_line, 0) == -1)
+			? -1
+			: (find_line(fd, line, full_line)));
 }
