@@ -34,7 +34,7 @@ static t_tuple	ft_read(const int fd)
 	t_tuple		tuple;
 
 	tuple.len = read(fd, buf, BUFF_SIZE);
-	tuple.str = tuple.len > 0
+	tuple.str = tuple.len > READ_EOF
 		? ft_strndup(buf, tuple.len)
 		: NULL;
 	tuple.pos = 0;
@@ -56,11 +56,11 @@ static int		find_line(const int fd, char **line, char *full_line)
 			ft_vec(&full_line, buffer.str[buffer.pos++]);
 		if (buffer.str == NULL)
 			buffer = ft_read(fd);
-		if (buffer.len == 0)
+		if (buffer.len == READ_EOF)
 		{
 			return (full_line
 					? !!(*line = full_line)
-					: 0);
+					: READ_EOF);
 		}
 		if (buffer.str[buffer.pos] == '\0')
 		{
@@ -75,7 +75,7 @@ int				get_next_line(const int fd, char **line)
 	char			*full_line;
 
 	full_line = NULL;
-	return ((!line || fd < 0 || read(fd, full_line, 0) == -1)
-			? -1
+	return ((!line || fd < 0 || read(fd, full_line, 0) == READ_ERROR)
+			? READ_ERROR
 			: (find_line(fd, line, full_line)));
 }
