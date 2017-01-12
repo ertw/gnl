@@ -1,0 +1,10 @@
+._*
+.nfs*
+a.out
+*.swp
+*.output
+*.o
+*.a
+*.DS_Store
+test.c
+main.c
