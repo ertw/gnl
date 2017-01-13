@@ -17,15 +17,11 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	char	*ptr;
 	char	*optr;
 
-	if (s1 && s2)
-	{
-		ptr = malloc(sizeof(s1) * (ft_strlen(s1) + ft_strlen(s2) + 3));
-		if (ptr)
-		{
-			optr = ptr;
-			ft_stpcpy((ft_stpcpy(ptr, s1)), s2);
-			return (optr);
-		}
-	}
-	return (NULL);
+	if (!(s1 && s2))
+		return (NULL);
+	if (!(ptr = malloc(sizeof(s1) * (ft_strlen(s1) + ft_strlen(s2) + 3))))
+		return (NULL);
+	optr = ptr;
+	ft_stpcpy((ft_stpcpy(ptr, s1)), s2);
+	return (optr);
 }
