@@ -11,3 +11,4 @@ main.c
 make.sh
 test*.txt
 test_gnl
+scratchpad.*
