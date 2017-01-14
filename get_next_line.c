@@ -28,14 +28,40 @@
 //	*s = tmp;
 //}
 //
-//static char		*ft_str_realloc(char *ptr, size_t len)
-//{
-//	char	*new_str;
-//
-//	if (!(new_str = ft_memalloc(sizeof(char) * len)))
-//		return (ptr);
-//	return (new_str);
-//}
+typedef struct s_vec
+{
+	size_t	len;
+	size_t	size;
+	char	*str;
+}		t_vec;
+
+t_vec		*ft_vec_new(const char *str, size_t len)
+{
+	t_vec	*vec;
+
+	vec->len = len;
+	--len;
+	len |= len >> 1;
+	len |= len >> 2;
+	len |= len >> 4;
+	len |= len >> 8;
+	len |= len >> 16;
+	++len;
+	vec->size = len;
+	vec->str = ft_memalloc(vec->size);
+	ft_memcpy(vec->str, str, len);
+return (vec);
+}
+
+t_vec		*ft_vec_cat(t_vec vec, size_t len)
+{
+	char	*new_str;
+	
+	if (vec.size - vec.len > len)
+		; //copy
+	ft_vec_new(
+	return (new_str);
+}
 
 static t_tuple	ft_read(const int fd)
 {
@@ -52,28 +78,15 @@ static t_tuple	ft_read(const int fd)
 
 static int		find_line(const int fd, char **line, char *full_line)
 {
-	static	t_tuple buffer;
+	static	t_tuple b;
 	char	*nl_ptr;
 
 	full_line = NULL;
 	*line = NULL;
 	while (1)
 	{
-		if (buffer.str)
-		{
-			nl_ptr = ft_strchr(&buffer.str[buffer.pos], '\n');
-			if (nl_ptr)
-			{
-				printf("%s\n", ft_strndup(&buffer.str[buffer.pos], nl_ptr - &buffer.str[buffer.pos]));
-				buffer.pos = nl_ptr - &buffer.str[buffer.pos];
-			}
-		}
-		if (buffer.pos == buffer.len)
-			ft_strdel(&buffer.str);
-		if (!buffer.str)
-			buffer = ft_read(fd);
-		if (buffer.len == 0)
-			return (READ_EOF);
+		if (b.str && (nl_ptr = ft_strchr(&b.str[b.pos], '\n')))
+			return (!!(line = ft_strjoin(full_line, )));
 	}
 }
 
