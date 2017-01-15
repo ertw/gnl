@@ -28,40 +28,9 @@
 //	*s = tmp;
 //}
 //
-typedef struct s_vec
-{
-	size_t	len;
-	size_t	size;
-	char	*str;
-}		t_vec;
+//
 
-t_vec		*ft_vec_new(const char *str, size_t len)
-{
-	t_vec	*vec;
 
-	vec->len = len;
-	--len;
-	len |= len >> 1;
-	len |= len >> 2;
-	len |= len >> 4;
-	len |= len >> 8;
-	len |= len >> 16;
-	++len;
-	vec->size = len;
-	vec->str = ft_memalloc(vec->size);
-	ft_memcpy(vec->str, str, len);
-return (vec);
-}
-
-t_vec		*ft_vec_cat(t_vec vec, size_t len)
-{
-	char	*new_str;
-	
-	if (vec.size - vec.len > len)
-		; //copy
-	ft_vec_new(
-	return (new_str);
-}
 
 static t_tuple	ft_read(const int fd)
 {
@@ -76,21 +45,119 @@ static t_tuple	ft_read(const int fd)
 	return (tuple);
 }
 
+int	ft_ptrdiff(const void *ptr1, const void *ptr2)
+{
+	unsigned char	p1;
+	unsigned char	p2;
+
+	p1 = (unsigned char)ptr1;
+	p2 = (unsigned char)ptr2;
+	return (p1 > p2
+			? p1 - p2
+			: p2 - p1);
+}
+
+
 static int		find_line(const int fd, char **line, char *full_line)
 {
 	static	t_tuple b;
 	char	*nl_ptr;
+	char	*tmp;
 
-	full_line = NULL;
+	full_line = ft_strdup("");
 	*line = NULL;
 	while (1)
 	{
-		if (b.str && (nl_ptr = ft_strchr(&b.str[b.pos], '\n')))
-			return (!!(line = ft_strjoin(full_line, )));
+		if (b.str)
+		{
+			nl_ptr = ft_strchr(b.str + b.pos, '\n');
+			if (nl_ptr)
+			{
+				tmp = ft_strsub(b.str, b.pos, (ft_ptrdiff(&b.str[b.pos], nl_ptr)));
+				full_line = ft_strjoin(full_line, tmp);
+				b.pos += 1 + ft_ptrdiff(&b.str[b.pos], nl_ptr);
+				ft_strdel(&tmp);
+				*line = full_line;
+				return (1);
+			}
+			else
+			{
+				tmp = ft_strsub(b.str, b.pos, b.len - b.pos);
+				full_line = ft_strjoin(full_line, tmp);
+				ft_strdel(&b.str);
+			}
+		}
+		if (b.str == NULL)
+		{
+			b = ft_read(fd);
+			if (b.len == 0)
+				return (READ_EOF);
+		}
 	}
 }
 
 
+//		if (b.str)
+//		{
+//			nl_ptr = ft_strchr(&b.str[b.pos], '\n');
+//			if (nl_ptr)
+//			{
+//				ft_strnapnd(&full_line, &b.str + b.pos, ft_ptrdiff(b.str + b.pos, nl_ptr));
+//				b.pos += ft_ptrdiff(b.str + b.pos, nl_ptr) + 1;
+//			}
+//		}
+
+
+
+
+//		if (b.str)
+//		{
+//			nl_ptr = ft_strchr(b.str + b.pos, '\n');
+//			if (nl_ptr)
+//			{
+//				ft_strnapnd(&full_line, &b.str + b.pos, nl_ptr - b.str + b.pos - 1);
+//				b.pos += nl_ptr - b.str + b.pos + 1;
+//				*line = full_line;
+//				if (b.pos == b.len)
+//					ft_strdel(&b.str);
+//				return (1);
+//			}
+//			else
+//			{
+//				ft_strnapnd(&full_line, &b.str + b.pos, b.len - b.pos);
+//				ft_strdel(&b.str);
+//			}
+//			//look for a nl;
+//			//	if found, copy from pos to nl
+//			//	update pos
+//			//else copy from pos to end
+//			//	null b.str
+//		}
+//		if (b.str == NULL)
+//		{
+//			b = ft_read(fd);
+//			if (b.len == 0)
+//				return (READ_EOF);
+//		}
+
+
+//		if (b.str && (nl_ptr = ft_strchr(&b.str[b.pos], '\n')))
+//		{
+////			tmp = ft_strndup(&b.str[b.pos], nl_ptr - &b.str[b.pos]);
+//			tmp = ft_strsub(b.str, b.pos, nl_ptr - &b.str[b.pos]);
+//			b.pos += (nl_ptr - &b.str[b.pos]) + 1;
+//			ft_vec(&full_line, &tmp);
+//			ft_strdel(&tmp);
+//			return (!!(*line = full_line));
+//		}
+//		if (b.str == NULL)
+//		{
+//			b = ft_read(fd);
+//			if (b.len == 0)
+//				return (READ_EOF);
+//		}
+//		if (b.pos == b.len)
+//			ft_strdel(&(b.str));
 
 //		if (buffer.str && buffer.str[buffer.pos] == '\n')
 //		{
