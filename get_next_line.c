@@ -12,25 +12,29 @@
 
 #include "get_next_line.h"
 #include <stdio.h>
-//static void		ft_vec(char **s, char c)
-//{
-//	char	*tmp;
-//	size_t	len;
-//
-//	len = *s == NULL
-//		? 0
-//		: ft_strlen(*s);
-//	tmp = malloc(sizeof(c) * (len + 2));
-//	ft_memcpy(tmp, *s, len);
-//	tmp[len] = c;
-//	tmp[len + 1] = '\0';
-//	ft_strdel(&(*s));
-//	*s = tmp;
-//}
-//
-//
 
+static void		ft_strnapnd(char **old, char **new, size_t len)
+{
+	char	*tmp;
+	size_t	old_len;
+	size_t	total_len;
 
+	old_len = *old == NULL
+		? 0
+		: ft_strlen(*old);
+	total_len = *old == NULL
+		? len
+		: len + old_len;
+	tmp = ft_memalloc(sizeof(char) * (total_len + 1));
+	if (*old == NULL)
+		ft_strcpy(tmp, *new);
+	else
+	{
+		ft_stpncpy(ft_stpcpy(tmp, *old), *new, len);
+		ft_strdel(&(*old));
+	}
+	*old = tmp;
+}
 
 static t_tuple	ft_read(const int fd)
 {
@@ -57,14 +61,13 @@ int	ft_ptrdiff(const void *ptr1, const void *ptr2)
 			: p2 - p1);
 }
 
-
 static int		find_line(const int fd, char **line, char *full_line)
 {
 	static	t_tuple b;
 	char	*nl_ptr;
 	char	*tmp;
 
-	full_line = ft_strdup("");
+	full_line = NULL;
 	*line = NULL;
 	while (1)
 	{
@@ -74,28 +77,64 @@ static int		find_line(const int fd, char **line, char *full_line)
 			if (nl_ptr)
 			{
 				tmp = ft_strsub(b.str, b.pos, (ft_ptrdiff(&b.str[b.pos], nl_ptr)));
-				full_line = ft_strjoin(full_line, tmp);
+//				full_line = ft_strjoin(full_line, tmp);
+				ft_strnapnd(&full_line, &tmp, ft_strlen(tmp));
 				b.pos += 1 + ft_ptrdiff(&b.str[b.pos], nl_ptr);
 				ft_strdel(&tmp);
-				*line = full_line;
-				return (1);
+				return (!!(*line = full_line));
 			}
 			else
 			{
 				tmp = ft_strsub(b.str, b.pos, b.len - b.pos);
-				full_line = ft_strjoin(full_line, tmp);
-				ft_strdel(&b.str);
+//				full_line = ft_strjoin(full_line, tmp);
+				if (tmp)
+				{
+					ft_strnapnd(&full_line, &tmp, ft_strlen(tmp));
+					ft_strdel(&tmp);
+				}
+				b.pos = b.len;
 			}
 		}
-		if (b.str == NULL)
+		if (b.len == b.pos)
 		{
+			ft_strdel(&b.str);
 			b = ft_read(fd);
-			if (b.len == 0)
+			if (full_line && *full_line == '\0')
 				return (READ_EOF);
+//			if (b.str == NULL)
+//			{
+//				*line = full_line;
+//				return (1);
+//			}
+			if (b.len == READ_EOF)
+				return (!!(*line = full_line));
 		}
 	}
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+//		if (buffer.str && buffer.str[buffer.pos] == '\n')
+//		{
+//			buffer.pos++;
+//			return (!!(*line = full_line) ? 1 : 1);
+//		}
+//		if (buffer.str && buffer.str[buffer.pos])
+//			ft_vec(&full_line, buffer.str[buffer.pos++]);
+//		if (buffer.str == NULL)
+//			buffer = ft_read(fd);
+//		if (buffer.len == READ_EOF)
+//		{
+//			return (full_line
+//					? !!(*line = full_line)
+//					: READ_EOF);
+//		}
+//		if (buffer.str[buffer.pos] == '\0')
+//		{
+//			ft_strdel(&buffer.str);
+//			buffer.str = NULL;
+//		}
+////////////////////////////////////////////////////////////////////////////////
 
 //		if (b.str)
 //		{
@@ -159,26 +198,6 @@ static int		find_line(const int fd, char **line, char *full_line)
 //		if (b.pos == b.len)
 //			ft_strdel(&(b.str));
 
-//		if (buffer.str && buffer.str[buffer.pos] == '\n')
-//		{
-//			buffer.pos++;
-//			return (!!(*line = full_line) ? 1 : 1);
-//		}
-//		if (buffer.str && buffer.str[buffer.pos])
-//			ft_vec(&full_line, buffer.str[buffer.pos++]);
-//		if (buffer.str == NULL)
-//			buffer = ft_read(fd);
-//		if (buffer.len == READ_EOF)
-//		{
-//			return (full_line
-//					? !!(*line = full_line)
-//					: READ_EOF);
-//		}
-//		if (buffer.str[buffer.pos] == '\0')
-//		{
-//			ft_strdel(&buffer.str);
-//			buffer.str = NULL;
-//		}
 
 
 int				get_next_line(const int fd, char **line)
