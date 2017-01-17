@@ -6,7 +6,7 @@
 /*   By: ewilliam <ewilliam@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/26 10:26:14 by ewilliam          #+#    #+#             */
-/*   Updated: 2017/01/05 16:52:20 by ewilliam         ###   ########.fr       */
+/*   Updated: 2017/01/16 14:42:18 by ewilliam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static t_tuple	ft_read(const int fd)
 	return (tuple);
 }
 
-int	ft_ptrdiff(const void *ptr1, const void *ptr2)
+int				ft_ptrdiff(const void *ptr1, const void *ptr2)
 {
 	unsigned char	p1;
 	unsigned char	p2;
@@ -63,9 +63,9 @@ int	ft_ptrdiff(const void *ptr1, const void *ptr2)
 
 static int		find_line(const int fd, char **line, char *full_line)
 {
-	static	t_tuple b;
-	char	*nl_ptr;
-	char	*tmp;
+	static t_tuple	b;
+	char			*nl_ptr;
+	char			*tmp;
 
 	full_line = NULL;
 	*line = NULL;
@@ -73,25 +73,19 @@ static int		find_line(const int fd, char **line, char *full_line)
 	{
 		if (b.str)
 		{
-			nl_ptr = ft_strchr(b.str + b.pos, '\n');
-			if (nl_ptr)
+			if ((nl_ptr = ft_strchr(b.str + b.pos, '\n')))
 			{
-				tmp = ft_strsub(b.str, b.pos, (ft_ptrdiff(&b.str[b.pos], nl_ptr)));
-//				full_line = ft_strjoin(full_line, tmp);
-				ft_strnapnd(&full_line, &tmp, ft_strlen(tmp));
-				b.pos += 1 + ft_ptrdiff(&b.str[b.pos], nl_ptr);
+				tmp = ft_strsub(b.str, b.pos, nl_ptr - &b.str[b.pos]);
+				ft_strnapnd(&full_line, &tmp, nl_ptr - &b.str[b.pos]);
+				b.pos += 1 + nl_ptr - &b.str[b.pos];
 				ft_strdel(&tmp);
 				return (!!(*line = full_line));
 			}
 			else
 			{
 				tmp = ft_strsub(b.str, b.pos, b.len - b.pos);
-//				full_line = ft_strjoin(full_line, tmp);
-				if (tmp)
-				{
-					ft_strnapnd(&full_line, &tmp, ft_strlen(tmp));
-					ft_strdel(&tmp);
-				}
+				ft_strnapnd(&full_line, &tmp, b.len - b.pos);
+				ft_strdel(&tmp);
 				b.pos = b.len;
 			}
 		}
@@ -99,106 +93,13 @@ static int		find_line(const int fd, char **line, char *full_line)
 		{
 			ft_strdel(&b.str);
 			b = ft_read(fd);
-			if (full_line && *full_line == '\0')
+			if (!b.str && full_line && *full_line == '\0')
 				return (READ_EOF);
-//			if (b.str == NULL)
-//			{
-//				*line = full_line;
-//				return (1);
-//			}
 			if (b.len == READ_EOF)
 				return (!!(*line = full_line));
 		}
 	}
 }
-
-
-////////////////////////////////////////////////////////////////////////////////
-//		if (buffer.str && buffer.str[buffer.pos] == '\n')
-//		{
-//			buffer.pos++;
-//			return (!!(*line = full_line) ? 1 : 1);
-//		}
-//		if (buffer.str && buffer.str[buffer.pos])
-//			ft_vec(&full_line, buffer.str[buffer.pos++]);
-//		if (buffer.str == NULL)
-//			buffer = ft_read(fd);
-//		if (buffer.len == READ_EOF)
-//		{
-//			return (full_line
-//					? !!(*line = full_line)
-//					: READ_EOF);
-//		}
-//		if (buffer.str[buffer.pos] == '\0')
-//		{
-//			ft_strdel(&buffer.str);
-//			buffer.str = NULL;
-//		}
-////////////////////////////////////////////////////////////////////////////////
-
-//		if (b.str)
-//		{
-//			nl_ptr = ft_strchr(&b.str[b.pos], '\n');
-//			if (nl_ptr)
-//			{
-//				ft_strnapnd(&full_line, &b.str + b.pos, ft_ptrdiff(b.str + b.pos, nl_ptr));
-//				b.pos += ft_ptrdiff(b.str + b.pos, nl_ptr) + 1;
-//			}
-//		}
-
-
-
-
-//		if (b.str)
-//		{
-//			nl_ptr = ft_strchr(b.str + b.pos, '\n');
-//			if (nl_ptr)
-//			{
-//				ft_strnapnd(&full_line, &b.str + b.pos, nl_ptr - b.str + b.pos - 1);
-//				b.pos += nl_ptr - b.str + b.pos + 1;
-//				*line = full_line;
-//				if (b.pos == b.len)
-//					ft_strdel(&b.str);
-//				return (1);
-//			}
-//			else
-//			{
-//				ft_strnapnd(&full_line, &b.str + b.pos, b.len - b.pos);
-//				ft_strdel(&b.str);
-//			}
-//			//look for a nl;
-//			//	if found, copy from pos to nl
-//			//	update pos
-//			//else copy from pos to end
-//			//	null b.str
-//		}
-//		if (b.str == NULL)
-//		{
-//			b = ft_read(fd);
-//			if (b.len == 0)
-//				return (READ_EOF);
-//		}
-
-
-//		if (b.str && (nl_ptr = ft_strchr(&b.str[b.pos], '\n')))
-//		{
-////			tmp = ft_strndup(&b.str[b.pos], nl_ptr - &b.str[b.pos]);
-//			tmp = ft_strsub(b.str, b.pos, nl_ptr - &b.str[b.pos]);
-//			b.pos += (nl_ptr - &b.str[b.pos]) + 1;
-//			ft_vec(&full_line, &tmp);
-//			ft_strdel(&tmp);
-//			return (!!(*line = full_line));
-//		}
-//		if (b.str == NULL)
-//		{
-//			b = ft_read(fd);
-//			if (b.len == 0)
-//				return (READ_EOF);
-//		}
-//		if (b.pos == b.len)
-//			ft_strdel(&(b.str));
-
-
 
 int				get_next_line(const int fd, char **line)
 {
