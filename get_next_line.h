@@ -13,7 +13,7 @@
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 # include "./libft/libft.h"
-# define BUFF_SIZE 2000
+# define BUFF_SIZE 21
 # define READ_ERROR -1
 # define READ_EOF 0
 
