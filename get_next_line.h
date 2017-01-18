@@ -24,5 +24,6 @@ typedef struct		s_tuple
 	char			*str;
 	int				len;
 	int				pos;
+	char			*nl_ptr;
 }					t_tuple;
 #endif

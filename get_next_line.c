@@ -29,14 +29,13 @@ static t_tuple	ft_read(const int fd)
 static int		find_line(const int fd, char **line, char *full_line)
 {
 	static t_tuple	b;
-	char			*nl_ptr;
 
 	while (1)
 	{
-		if (b.str && (nl_ptr = ft_strchr(b.str + b.pos, '\n')))
+		if (b.str && (b.nl_ptr = ft_strchr(b.str + b.pos, '\n')))
 		{
-			ft_strnjoin(&full_line, b.str + b.pos, nl_ptr - (b.str + b.pos));
-			b.pos += 1 + nl_ptr - &b.str[b.pos];
+			ft_strnjoin(&full_line, b.str + b.pos, b.nl_ptr - (b.str + b.pos));
+			b.pos += 1 + b.nl_ptr - &b.str[b.pos];
 			return (!!(*line = full_line));
 		}
 		if (b.str)
