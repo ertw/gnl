@@ -7,8 +7,6 @@ a.out
 *.a
 *.DS_Store
 test.c
-main.c
-make.sh
 test*.txt
 test_gnl
 scratchpad.*
